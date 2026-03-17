@@ -144,7 +144,7 @@ data: [DONE]
 
 ### 截图
 
-![主页面](screenshots/home.png)
+![演示图](screenshots/home.png)
 
 
 
