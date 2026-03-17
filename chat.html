@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美团客服（经典版）</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --yellow:  #FFC300;
+            --orange:  #FF8C00;
+            --red:     #FF3B30;
+            --bg:      #fdf6e3;
+            --card:    #ffffff;
+            --text:    #2d2d2d;
+            --muted:   #888888;
+            --radius:  16px;
+            --shadow:  0 8px 32px rgba(0,0,0,0.09);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Noto Serif SC', 'PingFang SC', serif;
+            color: var(--text);
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255,195,0,0.15) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 40% at 100% 100%, rgba(255,59,48,0.07) 0%, transparent 60%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ── 导航 ── */
+        .navbar {
+            width: 100%;
+            padding: 0 32px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.80);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,195,0,0.25);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideDown 0.5s ease-out both;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, var(--red), var(--orange));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(255,59,48,0.30);
+        }
+
+        .logo-dot span {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: sans-serif;
+        }
+
+        .navbar-brand strong {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--red);
+            letter-spacing: 0.02em;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .navbar-tag {
+            font-size: 0.72rem;
+            color: var(--muted);
+            background: #f5f5f5;
+            padding: 3px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.05em;
+            font-family: sans-serif;
+        }
+
+        /* ── 主体 ── */
+        .main {
+            width: 100%;
+            max-width: 780px;
+            padding: 36px 20px 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            text-align: center;
+            animation: fadeUp 0.6s ease-out 0.1s both;
+        }
+
+        .hero h1 {
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.25;
+        }
+
+        .hero h1 em {
+            font-style: normal;
+            color: var(--red);
+            position: relative;
+        }
+
+        .hero h1 em::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0; bottom: -3px;
+            height: 4px;
+            background: var(--yellow);
+            border-radius: 2px;
+        }
+
+        .hero p {
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 0.88rem;
+            letter-spacing: 0.04em;
+        }
+
+        /* ── 问答卡片 ── */
+        .qa-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid rgba(255,195,0,0.18);
+            animation: fadeUp 0.6s ease-out 0.2s both;
+        }
+
+        .qa-card::before {
+            content: '';
+            display: block;
+            height: 4px;
+            background: linear-gradient(90deg, var(--red) 0%, var(--orange) 50%, var(--yellow) 100%);
+        }
+
+        .qa-card-body {
+            padding: 28px 28px 24px;
+        }
+
+        .qa-card-body label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 10px;
+            font-family: sans-serif;
+            letter-spacing: 0.03em;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-row input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fafafa;
+            color: var(--text);
+        }
+
+        .input-row input:focus {
+            border-color: var(--yellow);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,195,0,0.15);
+            background: #fff;
+        }
+
+        .input-row input::placeholder { color: #bbb; }
+
+        .submit-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--red), var(--orange));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            box-shadow: 0 3px 12px rgba(255,59,48,0.25);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(255,59,48,0.30);
+        }
+
+        .submit-btn:active:not(:disabled) { transform: translateY(0); }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* ── 状态提示 ── */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #fffbea;
+            border-top: 1px solid #ffe89a;
+            font-size: 0.82rem;
+            color: #a07800;
+            font-family: sans-serif;
+        }
+
+        .status-bar .spinner {
+            width: 14px;
+            height: 14px;
+            border: 2px solid #ffd966;
+            border-top-color: var(--orange);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            flex-shrink: 0;
+        }
+
+        /* ── 回答区域 ── */
+        .answer-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid rgba(255,195,0,0.18);
+            animation: fadeUp 0.5s ease-out 0.3s both;
+            display: none;
+        }
+
+        .answer-card.visible { display: block; }
+
+        .answer-card::before {
+            content: '';
+            display: block;
+            height: 4px;
+            background: linear-gradient(90deg, var(--yellow) 0%, var(--orange) 100%);
+        }
+
+        .answer-card-header {
+            padding: 14px 20px 10px;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 0.82rem;
+            color: var(--muted);
+            font-family: sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .answer-card-header::before {
+            content: '💬';
+            font-size: 0.9rem;
+        }
+
+        .answer-body {
+            padding: 20px 24px 24px;
+            line-height: 1.8;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .answer-body p { margin-bottom: 10px; }
+        .answer-body p:last-child { margin-bottom: 0; }
+        .answer-body ul, .answer-body ol { padding-left: 1.5em; margin-bottom: 10px; }
+        .answer-body li { margin-bottom: 4px; }
+        .answer-body strong { color: var(--red); }
+        .answer-body a { color: var(--red); text-decoration: none; }
+        .answer-body a:hover { text-decoration: underline; }
+        .answer-body code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.88em;
+            font-family: monospace;
+        }
+
+        .error-text { color: #e53e3e; font-family: sans-serif; font-size: 0.9rem; }
+
+        /* ── 底部 ── */
+        .footer-note {
+            font-size: 0.76rem;
+            color: #ccc;
+            font-family: sans-serif;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        /* ── 动画 ── */
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ── 响应式 ── */
+        @media (max-width: 600px) {
+            .navbar { padding: 0 16px; }
+            .main { padding: 20px 12px 40px; }
+            .qa-card-body { padding: 20px 16px 16px; }
+            .input-row { flex-direction: column; }
+            .submit-btn { width: 100%; }
+            .navbar-tag { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 导航 -->
+    <nav class="navbar">
+        <a class="navbar-brand" href="#">
+            <div class="logo-dot"><span>美</span></div>
+            <strong>美团智能客服</strong>
+        </a>
+        <div class="navbar-right">
+            <span class="navbar-tag">经典版 · CLASSIC</span>
+        </div>
+    </nav>
+
+    <div class="main">
+
+        <!-- 标题 -->
+        <div class="hero">
+            <h1>您好，我是<em>美团客服</em></h1>
+            <p>请输入您的问题，AI 将为您快速解答</p>
+        </div>
+
+        <!-- 问答卡片 -->
+        <div class="qa-card">
+            <div class="qa-card-body">
+                <label for="question">请输入您的问题：</label>
+                <div class="input-row">
+                    <input type="text" id="question" autocomplete="off"
+                           placeholder="例如：如何申请退款？" />
+                    <button class="submit-btn" id="submitBtn">提交问题</button>
+                </div>
+            </div>
+            <div class="status-bar" id="statusBar" style="display:none">
+                <span class="spinner"></span>
+                <span id="statusText">正在思考中，请稍候…</span>
+            </div>
+        </div>
+
+        <!-- 回答卡片 -->
+        <div class="answer-card" id="answerCard">
+            <div class="answer-card-header" id="answerHeader">AI 回答</div>
+            <div class="answer-body" id="answerBody"></div>
+        </div>
+
+        <p class="footer-note">
+            本系统为内部测试版本，回答内容仅供参考<br>
+            Powered by RAGFlow &nbsp;·&nbsp; &copy; 美团智能客服
+        </p>
+
+    </div>
+
+    <script>
+        const questionInput = document.getElementById('question');
+        const submitBtn     = document.getElementById('submitBtn');
+        const statusBar     = document.getElementById('statusBar');
+        const statusText    = document.getElementById('statusText');
+        const answerCard    = document.getElementById('answerCard');
+        const answerBody    = document.getElementById('answerBody');
+        const answerHeader  = document.getElementById('answerHeader');
+
+        // 光标闪烁元素
+        const cursor = document.createElement('span');
+        cursor.id = 'stream-cursor';
+        cursor.style.cssText = 'display:inline-block;width:2px;height:1em;background:var(--orange);margin-left:2px;vertical-align:middle;animation:blink 0.7s step-end infinite;';
+        const style = document.createElement('style');
+        style.textContent = '@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}';
+        document.head.appendChild(style);
+
+        const setLoading = (on) => {
+            submitBtn.disabled = on;
+            statusBar.style.display = on ? 'flex' : 'none';
+        };
+
+        const showError = (msg) => {
+            answerBody.innerHTML = `<p class="error-text">${msg}</p>`;
+            answerCard.classList.add('visible');
+        };
+
+        const handleSubmit = async () => {
+            const question = questionInput.value.trim();
+            if (!question) {
+                questionInput.focus();
+                questionInput.style.borderColor = 'var(--red)';
+                setTimeout(() => questionInput.style.borderColor = '', 1200);
+                return;
+            }
+
+            // 重置界面
+            setLoading(true);
+            answerHeader.textContent = `Q：${question}`;
+            statusText.textContent   = 'AI 正在思考...';
+            answerBody.innerHTML     = '';
+            answerCard.classList.add('visible');
+            answerCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            let fullText = '';  // 累积的完整原始文本
+
+            try {
+                const res = await fetch('/ask_stream', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question }),
+                });
+
+                if (!res.ok) throw new Error(`服务器错误 (${res.status})`);
+
+                const reader  = res.body.getReader();
+                const decoder = new TextDecoder();
+                let   buffer  = '';
+
+                // 显示光标
+                answerBody.appendChild(cursor);
+
+                let streamDone = false;
+                while (!streamDone) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop(); // 保留未完整的行
+
+                    for (const line of lines) {
+                        if (!line.startsWith('data:')) continue;
+                        const raw = line.slice(5).trim();
+
+                        if (raw === '[DONE]') {
+                            streamDone = true;
+                            break;
+                        }
+
+                        try {
+                            const obj = JSON.parse(raw);
+                            if (obj.error) throw new Error(obj.error);
+                            if (obj.answer !== undefined && obj.answer !== '') {
+                                // RAGFlow 返回增量片段，累积拼接
+                                fullText += obj.answer;
+                                if (cursor.parentNode) cursor.remove();
+                                answerBody.innerHTML = marked.parse(fullText);
+                                answerBody.appendChild(cursor);
+                                statusText.textContent = 'AI 正在回答...';
+                            }
+                        } catch (e) {
+                            if (e.message !== 'Unexpected end of JSON input') {
+                                throw e;
+                            }
+                        }
+                    }
+                }
+
+                // 流结束，移除光标，最终渲染
+                if (cursor.parentNode) cursor.remove();
+                if (fullText) {
+                    answerBody.innerHTML = marked.parse(fullText);
+                }
+
+            } catch (err) {
+                console.error(err);
+                if (cursor.parentNode) cursor.remove();
+                showError(`获取回答失败：${err.message}，请稍后重试。`);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        submitBtn.addEventListener('click', handleSubmit);
+        questionInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') handleSubmit();
+        });
+    </script>
+
+</body>
+</html>
