@@ -7,7 +7,7 @@
 ## 项目结构
 
 ```
-meituan_legacy/
+ai_chat/
 ├── chat_un_stream.py     # RAGFlow API 封装模块（非流式问答、公共请求头）
 ├── websocket_server.py   # Flask 后端服务（提供 HTTP 接口与流式转发）
 ├── chat.html             # 前端聊天页面（SSE 流式渲染，Markdown 支持）
