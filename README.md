@@ -1,4 +1,4 @@
-# 美团智能客服系统（测试）
+# 美团智能客服系统（经典版）
 
 基于 [RAGFlow](https://github.com/infiniflow/ragflow) 知识库检索引擎，结合 Flask 后端与 SSE 流式推送，构建的美团场景智能问答客服系统。
 
@@ -8,7 +8,7 @@
 
 ```
 meituan_legacy/
-├── chat_un_stream.py     # RAGFlow API 封装模块（非流式问答、数据集管理）
+├── chat_un_stream.py     # RAGFlow API 封装模块（非流式问答、公共请求头）
 ├── websocket_server.py   # Flask 后端服务（提供 HTTP 接口与流式转发）
 ├── chat.html             # 前端聊天页面（SSE 流式渲染，Markdown 支持）
 ├── start_service.bat     # Windows 一键启动脚本
@@ -58,6 +58,8 @@ API_KEY = "ragflow-xxxxxxxxxxxxxxxxxxxxxxxx"
 # 目标对话助手的 Chat ID
 CHAT_ID = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ```
+
+> **模块说明**：`chat_un_stream.py` 同时提供 `_auth_headers()` 公共函数，供 `websocket_server.py` 复用，无需在多处重复构造请求头。
 
 > **如何获取 Chat ID？**  
 > 登录 RAGFlow 管理后台 → 进入「对话」模块 → 选择或创建一个助手 → URL 中的末段即为 Chat ID。
@@ -144,17 +146,13 @@ data: [DONE]
 
 ### 截图
 
-![演示图](screenshots/home.png)
+![主页面](screenshots/home.png)
 
 
 
-
+> 将截图保存到项目根目录下的 `screenshots/` 文件夹，并按上方文件名命名即可自动显示。
 
 ---
-
-## 体验网址
-
-**这是内网穿透后的网站，不定时会开启：** frp-era.com:62150
 
 ## License
 
